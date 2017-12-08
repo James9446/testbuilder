@@ -7,27 +7,44 @@
 //   1. The first few numbers (called the prefix)
 //   2. The number of digits in the number (called the length)
 
-var detectNetwork = function(cardNumber) {
-  // Note: `cardNumber` will always be a string
-  // The Diner's Club network always starts with a 38 or 39 and is 14 digits long
-  //It should have a variable for prefix
-  var prefix = cardNumber[0] + cardNumber[1];
+// 38345678901234 (Diner's Club)
+// 39345678901234 (Diner's Club)
+// 343456789012345 (American Express)
+// 373456789012345 (American Express)
+// 4123456789012 (Visa)
+// 4123456789012345 (Visa)
+// 4123456789012345678 (Visa)
+// 5112345678901234 (MasterCard)
+// 5212345678901234 (MasterCard)
+// 5312345678901234 (MasterCard)
+// 5412345678901234 (MasterCard)
+// 5512345678901234 (MasterCard)
 
-  // It should variables for known credit card prefix values
+// Visa always has a prefix of 4 and a length of 13, 16, or 19.
+// MasterCard always has a prefix of 51, 52, 53, 54, or 55 and a length of 16.
+
+var detectNetwork = function(cardNumber) {
+  var prefix = cardNumber[0] + cardNumber[1];
   var amexPrefix = ['34', '37'];
   var dinerPrefix = ['38', '39'];
+  var visaPrefix = '4';
+  var masterPrefix = ['51', '52', '53', '54', '55']
 
-  // The American Express network always starts with a 34 or 37 and is 15 digits long
-  // It should check prefix for known values
-  if (prefix === amexPrefix[0] || prefix === amexPrefix[1] && cardNumber.length === 15) {
+  if ((prefix === amexPrefix[0] || prefix === amexPrefix[1]) && cardNumber.length === 15) {
   	return 'American Express';
   }
-  if (prefix === dinerPrefix[0] || prefix === dinerPrefix[1] && cardNumber.length === 14) {
+  if ((prefix === dinerPrefix[0] || prefix === dinerPrefix[1]) && cardNumber.length === 14) {
   	return 'Diner\'s Club';
   }
+  if ((prefix[0] === visaPrefix) && (cardNumber.length === 13 || cardNumber.length === 16 || cardNumber.length === 19)) {
+  	return 'Visa';
+  }  
+  for (var i = 0; i < masterPrefix.length; i++) {
+  	if (prefix === masterPrefix[i] && cardNumber.length === 16) {
+  		return 'MasterCard'
+  	}
+  }
 
-  // Once you've read this, go ahead and try to implement this function, then return to the console.
-  // It should return unidentified if card prefix has no matches
 };
 
 function assertEqual(actual, expected, testName) {
@@ -38,5 +55,15 @@ function assertEqual(actual, expected, testName) {
 	}
 }
 
+//console.log(detectNetwork('5112345678901234'));
+
 // assertEqual(detectNetwork('343456789012345'), '34', 'It should create prefix variable'); // If prefix set as return, test will fail final function
-assertEqual(detectNetwork('343456789012345'), 'American Express', 'It should return correct credit card name');
+assertEqual(detectNetwork('343456789012345'), 'American Express', 'It should return American Express credit card name');
+assertEqual(detectNetwork('4123456789012'), 'Visa', 'It should return Visa credit card name');
+assertEqual(detectNetwork('4123456789012345'), 'Visa', 'It should return Visa credit card name');
+assertEqual(detectNetwork('4123456789012345678'), 'Visa', 'It should return Visa credit card name');
+assertEqual(detectNetwork('5112345678901234'), 'MasterCard', 'It should return MasterCard credit card name');
+assertEqual(detectNetwork('5212345678901234'), 'MasterCard', 'It should return MasterCard credit card name');
+assertEqual(detectNetwork('5312345678901234'), 'MasterCard', 'It should return MasterCard credit card name');
+assertEqual(detectNetwork('5412345678901234'), 'MasterCard', 'It should return MasterCard credit card name');
+assertEqual(detectNetwork('5512345678901234'), 'MasterCard', 'It should return MasterCard credit card name');
