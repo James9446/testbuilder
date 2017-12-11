@@ -197,41 +197,35 @@ describe('should support Switch', function() {
   });
 });
 
-// ---=== China UnionPay ===---
+  // ---=== China UnionPay ===---
+
 describe('should support China UnionPay', function() {
   var expect = chai.expect;
-  for (var prefix = 624; prefix <= 626; prefix++) {
-    (function(prefix) {
-      it('has a prefix of ' + prefix + ' and a length of 16', function() {
-        expect(detectNetwork(prefix + '0123456789012')).to.equal('China UnionPay')
+  var lengthAdded = '';
+  var prefix = 623;   
+  var cardLength; 
+  
+  for (var i = 0; i < 40; i++) {  // for loop is set to 40 to accomodate every iteration needed for 624-626, and 6282-6288 at every length
+    if (i % 3 === 0 && i < 12) {  // % 3 is used because there are 3 different prefix values in the 624-626 range
+      lengthAdded += '0'; // lengthAdded is increased and prefix reset
+      prefix = 623; 
+    } else if (i === 12) {  // at a 12 count the prefix is changed to the next range and lengthAdded is reset
+      lengthAdded = '';
+      prefix = 6281;
+    }
+    if ((i - 12) % 7 === 0 && i > 12) {  // % 7 is used because there are 7 different prefix values in the 6282-6288 range
+      lengthAdded += '0'; // lengthAdded is increased and prefix reset
+      prefix = 6281;
+    }
+    prefix++; // prefix increased throuh every iteration 
+    cardLength = prefix + '012345678901' + lengthAdded;
+    (function(prefix, lengthAdded) {
+      it('has a prefix of ' + prefix + ' and a length of ' + cardLength.length, function() {
+      expect(detectNetwork(prefix + '012345678901' + lengthAdded)).to.equal('China UnionPay')
       });
-      it('has a prefix of ' + prefix + ' and a length of 17', function() {
-        expect(detectNetwork(prefix + '01234567890123')).to.equal('China UnionPay')
-      });
-      it('has a prefix of ' + prefix + ' and a length of 18', function() {
-        expect(detectNetwork(prefix + '012345678901234')).to.equal('China UnionPay')
-      });
-      it('has a prefix of ' + prefix + ' and a length of 19', function() {
-        expect(detectNetwork(prefix + '0123456789012345')).to.equal('China UnionPay')
-      });
-    })(prefix)
+    })(prefix, lengthAdded)
   }
-  for (var prefix = 6282; prefix <= 6288; prefix++) {
-    (function(prefix) {
-      it('has a prefix of ' + prefix + ' and a length of 16', function() {
-        expect(detectNetwork(prefix + '012345678901')).to.equal('China UnionPay')
-      });
-      it('has a prefix of ' + prefix + ' and a length of 17', function() {
-        expect(detectNetwork(prefix + '0123456789012')).to.equal('China UnionPay')
-      });
-      it('has a prefix of ' + prefix + ' and a length of 18', function() {
-        expect(detectNetwork(prefix + '01234567890123')).to.equal('China UnionPay')
-      });
-      it('has a prefix of ' + prefix + ' and a length of 19', function() {
-        expect(detectNetwork(prefix + '012345678901234')).to.equal('China UnionPay')
-      });
-    })(prefix)
-  }
+  // May try to refactor everything into a single loop - for now I'm very happy
   for (var prefix = 622126; prefix <= 622925; prefix++) {
     (function(prefix) {
       it('has a prefix of ' + prefix + ' and a length of 16', function() {
@@ -248,26 +242,5 @@ describe('should support China UnionPay', function() {
       });
     })(prefix)
   }
-
-  // -----====== TRIED DOZENS OF ATTEMPTS TO SOLVE THIS WITH A LOOP INSIDE A LOOP - PREFIX AND LENGTH =====-----
-
-  // it('has a prefix of 624-626 and a length of 16', function() {
-  //   expect(detectNetwork('6240123456789012')).to.equal('China UnionPay')
-  // });
-  // for (var i = 16; i <= 19; i++) {
-    
-  //   (function(lengthAdded) {
-  //     (function(prefix) {
-  //     for (var prefix = 624; prefix <= 626; prefix++) {
-  //       //(function(prefix) {
-          // it('has a prefix of ' + prefix + ' and a length of ' + i, function() {
-          // expect(detectNetwork(prefix + '012345678901' + lengthAdded)).to.equal('China UnionPay')
-          // });
-  //       //})(prefix)
-  //    }
-  //    })(prefix)
-  //   })(lengthAdded)
-  // lengthAdded += '0';  
-  // }
 });
 
