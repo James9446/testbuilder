@@ -111,7 +111,7 @@ function assertEqual(actual, expected, testName) {
 
 //console.log(detectNetwork('5112345678901234'));
 
-assertEqual(detectNetwork('343456789012345'), '34', 'It should create prefix variable'); // If prefix set as return, test will fail final function
+// assertEqual(detectNetwork('343456789012345'), '34', 'It should create prefix variable'); // If prefix set as return, test will fail final function
 assertEqual(detectNetwork('343456789012345'), 'American Express', 'It should return American Express credit card name');
 assertEqual(detectNetwork('4123456789012'), 'Visa', 'It should return Visa credit card name');
 assertEqual(detectNetwork('4123456789012345'), 'Visa', 'It should return Visa credit card name');
