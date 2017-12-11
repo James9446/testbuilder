@@ -36,17 +36,15 @@ var detectNetwork = function(cardNumber) {
   var discoverPrefix = ['6011', '644', '645', '646', '647', '648', '649', '65'];
   var maestroPrefix = ['5018', '5020', '5038', '6304']
   var chinaPrefix = combineArrays(combineArrays(convertArrayToString(createArray(624, 626)), convertArrayToString(createArray(6282, 6288))), convertArrayToString(createArray(622126, 622925)));
-  
+  var switchPrefix = ['4903', '4905', '4911', '4936', '564182', '633110', '6333', '6759']
+
   // console.log(chinaPrefix);
   if ((prefix === amexPrefix[0] || prefix === amexPrefix[1]) && cardNumber.length === 15) {
   	return 'American Express';
   }
   if ((prefix === dinerPrefix[0] || prefix === dinerPrefix[1]) && cardNumber.length === 14) {
   	return 'Diner\'s Club';
-  }
-  if ((prefix[0] === visaPrefix) && (cardNumber.length === 13 || cardNumber.length === 16 || cardNumber.length === 19)) {
-  	return 'Visa';
-  }  
+  } 
   for (var i = 0; i < masterPrefix.length; i++) {
   	if (prefix === masterPrefix[i] && cardNumber.length === 16) {
   		return 'MasterCard'
@@ -57,12 +55,12 @@ var detectNetwork = function(cardNumber) {
   }
   for (var i = 0; i < discoverPrefix.length; i++) {
     if (prefix + cardNumber[2] === discoverPrefix[i] && (cardNumber.length === 16 || cardNumber.length === 19)) {
-      return 'Discover'
+      return 'Discover';
     }
   }
   for (var i = 0; i < maestroPrefix.length; i++) {
     if (prefix + cardNumber[2] + cardNumber[3] === maestroPrefix[i] && isInRange(cardNumber.length, 12, 19)) {
-      return 'Maestro'
+      return 'Maestro';
     }
   }
   for (var i = 0; i < chinaPrefix.length; i++) {
@@ -71,6 +69,17 @@ var detectNetwork = function(cardNumber) {
       return 'China UnionPay'
     }
   }
+  for (var i = 0; i < switchPrefix.length; i++) {
+    if (prefix + cardNumber[2] + cardNumber[3] === switchPrefix[i] && (cardNumber.length === 16 || isInRange(cardNumber.length, 18, 19))) {
+      return 'Switch';
+    }
+    if (prefix + cardNumber[2] + cardNumber[3] + cardNumber[4] + cardNumber[5] === switchPrefix[i] && (cardNumber.length === 16 || isInRange(cardNumber.length, 18, 19))) {
+      return 'Switch';
+    }
+  }
+  if ((prefix[0] === visaPrefix) && (cardNumber.length === 13 || cardNumber.length === 16 || cardNumber.length === 19)) {
+    return 'Visa';
+  } 
 };
 
 function combineArrays(arr1, arr2) {
@@ -125,6 +134,7 @@ assertEqual(detectNetwork('501812345678'), 'Maestro', 'It should return Maestro 
 assertEqual(detectNetwork('624012345678901234'), 'China UnionPay', 'It has a prefix of 624 and a length of 18');
 assertEqual(detectNetwork('628201234567890123'), 'China UnionPay', 'It has a prefix of 6282 and a length of 18');
 assertEqual(detectNetwork('622126012345678901'), 'China UnionPay', 'It has a prefix of 622126 and a length of 18');
+assertEqual(detectNetwork('633110012345678901'), 'Switch', 'It has a prefix of 633110 and a length of 18');
 assertEqual(isInRange(12, 12, 19), true, 'It should check if value is in range')
 // assertEqual(createArray(6282, 6288))
 // console.log(createArray(6282, 6288));
